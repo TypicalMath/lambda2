@@ -9,8 +9,8 @@ Inductive type : Type :=
 | Arr : type -> type -> type
 | Pi : atomic_type -> type -> type.
 
-Notation "& x" := (Var x) (at level 10).
-Infix ">>" := Arr (right associativity, at level 11).
+Notation "& x" := (Var x) (at level 8).
+Infix ">>" := Arr (right associativity, at level 9).
 
 Fixpoint FVb (n : atomic_type) (t : type) : bool :=
   match t with
@@ -36,8 +36,9 @@ Inductive term : Type :=
 | Tabs : atomic_type -> term.
 
 Notation "# x" := (TVar x) (at level 10).
-Notation "* a b" := (App a b) (left associativity, at level 11).
-Notation "^ a b" := (Tapp a b) (left associativity, at level 12).
+Infix "!" := (App) (left associativity, at level 11).
+Infix "!!" := (Tapp) (left associativity, at level 12).
+
 Notation "\ x t m" := (Abs x t m) (right associativity, at level 13).
 Notation "/ t m" := (Tabs t m) (right associativity, at level 14).
 
