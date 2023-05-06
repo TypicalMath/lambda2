@@ -32,13 +32,12 @@ Inductive term : Type :=
 | TVar : atomic_term -> term
 | App : term -> term -> term
 | Tapp : term -> type -> term
-| Abs : atomic_term -> type -> term
-| Tabs : atomic_type -> term.
+| Abs : atomic_term -> type -> term -> term
+| Tabs : atomic_type -> term -> term.
 
 Notation "# x" := (TVar x) (at level 10).
 Infix "!" := (App) (left associativity, at level 11).
 Infix "!!" := (Tapp) (left associativity, at level 12).
-
 Notation "\ x t m" := (Abs x t m) (right associativity, at level 13).
 Notation "/ t m" := (Tabs t m) (right associativity, at level 14).
 
