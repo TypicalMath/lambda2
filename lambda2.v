@@ -81,8 +81,8 @@ Coercion atomic_type_as_declaration (a : atomic_type) : declaration := TStd a.
 
 Inductive l2_context : context -> Prop :=
 | Emp : l2_context []
-| CType : forall (G : context) (a : atomic_type), (check_type G a = false) -> l2_context ((TStd a) :: G)
-| CTerm : forall (G : context) (x : atomic_term) (r : type), (check_term G x = false) -> (foreach (FVl r) (check_type G)) -> l2_context ((x :* r) :: G).
+| CType : forall (G : context) (a : atomic_type), l2_context G -> (check_type G a = false) -> l2_context ((TStd a) :: G)
+| CTerm : forall (G : context) (x : atomic_term) (r : type), l2_context G -> (check_term G x = false) -> (foreach (FVl r) (check_type G)) -> l2_context ((x :* r) :: G).
 
 
 Fixpoint subs (t : type) (a : atomic_type) (b : type) : type :=
