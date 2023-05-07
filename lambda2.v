@@ -104,3 +104,6 @@ Inductive l2 : context -> statement -> Prop :=
 | Tapp2 : forall G M a A B, (G ⊢ (M :# (Pi a A))) -> (G ⊢ (TSt B)) -> G ⊢ ((M !! B) :# (subs A a B))
 | Tabs2 : forall G a M A, ((TStd a)::G ⊢ M :# A) -> G ⊢ (Tabs a M) :# (Pi a A)
 where "G ⊢ st" := (l2 G st).
+
+Lemma context_term : forall G x s, l2_context ((x :* s) :: G) -> l2_context G.
+Proof. intros G x s H. inversion H. auto. Qed.
