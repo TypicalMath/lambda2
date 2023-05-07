@@ -91,3 +91,16 @@ Fixpoint subs (t : type) (a : atomic_type) (b : type) : type :=
   | r >> s => (subs r a b) >> (subs r a b)
   | Pi x s => if eqb x a then t else Pi x (subs s a b)
   end.
+
+Coercion atomic_term_as_term (a : atomic_term) : term := # a.
+
+Reserved Notation "G ⊢ st" (no associativity, at level 61). (* 22a2 *)
+
+Inductive l2 : context -> statement -> Prop :=
+| Var2 : forall (G : context) (x : atomic_term) (s : type), (l2_context G) -> (In (x :* s) G) -> G ⊢ x :# s
+| App2 : forall G M N s t, (G ⊢ (M :# (s >> t))) -> (G ⊢ (N :# s)) -> G ⊢ ((M ! N ) :# t)
+| Abs2 : forall G M x s t, ((x :* s) :: G ⊢ M :# t) -> G ⊢ (Abs x s M) :# (s >> t)
+| Form2 : forall G B, (l2_context G) -> (foreach (FVl B) (check_type G)) -> G ⊢ TSt B
+| Tapp2 : forall G M a A B, (G ⊢ (M :# (Pi a A))) -> (G ⊢ (TSt B)) -> G ⊢ ((M !! B) :# (subs A a B))
+| Tabs2 : forall G a M A, ((TStd a)::G ⊢ M :# A) -> G ⊢ (Tabs a M) :# (Pi a A)
+where "G ⊢ st" := (l2 G st).
