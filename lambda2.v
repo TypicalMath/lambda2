@@ -107,3 +107,6 @@ where "G ⊢ st" := (l2 G st).
 
 Lemma context_term : forall G x s, l2_context ((x :* s) :: G) -> l2_context G.
 Proof. intros G x s H. inversion H. auto. Qed.
+
+Lemma context_type : forall G a, l2_context ((TStd a) :: G) -> l2_context G.
+Proof. intros G a H. inversion H. auto. Qed.
