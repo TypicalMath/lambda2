@@ -110,3 +110,15 @@ Proof. intros G x s H. inversion H. auto. Qed.
 
 Lemma context_type : forall G a, l2_context ((TStd a) :: G) -> l2_context G.
 Proof. intros G a H. inversion H. auto. Qed.
+
+Theorem exercise19: forall G l s, G ⊢ l :# s -> l2_context G.
+Proof.
+  intros.
+  induction H.
+    - apply H.
+    - apply IHl2_1.
+    - apply (context_term _ _ _ IHl2).
+    - apply H.
+    - apply IHl2_1.
+    - apply (context_type _ _ IHl2).
+Qed.
