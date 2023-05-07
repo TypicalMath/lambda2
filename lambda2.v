@@ -83,3 +83,11 @@ Inductive l2_context : context -> Prop :=
 | Emp : l2_context []
 | CType : forall (G : context) (a : atomic_type), (check_type G a = false) -> l2_context ((TStd a) :: G)
 | CTerm : forall (G : context) (x : atomic_term) (r : type), (check_term G x = false) -> (foreach (FVl r) (check_type G)) -> l2_context ((x :* r) :: G).
+
+
+Fixpoint subs (t : type) (a : atomic_type) (b : type) : type :=
+  match t with
+  | & x => if eqb x a then b else t
+  | r >> s => (subs r a b) >> (subs r a b)
+  | Pi x s => if eqb x a then t else Pi x (subs s a b)
+  end.
