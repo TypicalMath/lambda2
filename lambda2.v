@@ -80,6 +80,6 @@ Definition foreach {T : Type} (l : list T) (P : T -> bool) := fold_left andb (ma
 Coercion atomic_type_as_declaration (a : atomic_type) : declaration := TStd a.
 
 Inductive l2_context : context -> Prop :=
-| Emp : forall (G : context), (G = nil) -> l2_context G
+| Emp : l2_context []
 | CType : forall (G : context) (a : atomic_type), (check_type G a = false) -> l2_context ((TStd a) :: G)
 | CTerm : forall (G : context) (x : atomic_term) (r : type), (check_term G x = false) -> (foreach (FVl r) (check_type G)) -> l2_context ((x :* r) :: G).
