@@ -51,6 +51,12 @@ Inductive declaration : Type :=
 | Std : atomic_term -> type -> declaration
 | TStd : atomic_type -> declaration.
 
+Definition dec2st (d : declaration) : statement :=
+  match d with
+  | Std n a => St (TVar n) a
+  | TStd n => TSt (Var n)
+  end.
+
 Infix ":*" := Std (at level 10).
 
 Definition context := list declaration.
