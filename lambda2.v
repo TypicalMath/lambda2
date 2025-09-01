@@ -128,3 +128,99 @@ Proof.
     - apply IHl2_1.
     - apply (context_type _ _ IHl2).
 Qed.
+
+(*  ===============================Examples================================*)
+
+Definition t1 := &0.
+Definition t2 := (&0) >> (&1).
+Definition t3 := Pi 0 (&0 >> &1).
+
+Compute FVb 0 t1.
+Compute FVb 1 t1.
+
+Compute FVb 0 t2.
+
+Compute FVb 0 t3.
+Compute FVb 1 t3.
+
+Compute FVl t2.
+Compute FVl t3.
+
+
+Definition M := #0.
+Definition N := #1.
+Definition app := M!N.
+Definition tapp := M!!t1.
+Definition abs := Abs 0 t1 M.
+Definition tabs := Tabs 0 M.
+
+Compute app.
+Compute abs.
+
+Definition d1 := (0 :* t1).
+Definition d2 := (TStd 1).
+
+Compute dec2st d1.
+Compute dec2st d2.
+
+Definition G1 := [TStd 0; 1 :* t1].
+
+Compute check_type G1 0.
+Compute check_term G1 0.
+Compute check_term G1 1.
+
+Example cntxt2 : l2_context [1 :* (&0); TStd 0].
+Proof.
+  constructor; auto.
+  + constructor; auto. constructor.
+  + simpl. reflexivity.
+Qed.
+
+
+Compute subs ((&0) >> (&1)) 0 (&2). 
+Compute subs (Pi 0 (&0 >> &1)) 0 (&2).
+
+Example var_typing : [0 :* &0; TStd 0] ⊢ (#0 :# &0).
+Proof.
+  constructor.
+  + repeat constructor.
+  + simpl. left. trivial.
+Qed.
+
+
+(* Generation Lemma for λ2 *)
+Lemma gen_var: forall G (x : atomic_term) s, G ⊢ (x :# s) -> In (x :* s) G /\ l2_context G.
+Proof.
+  intros. split.
+  + inversion H; subst. assumption.
+  + inversion H; subst. assumption.
+Qed.
+
+Lemma gen_app: forall G M N t, G ⊢ ((M!N) :# t) -> 
+    exists s, G ⊢ (M :# (s >> t)) /\ G ⊢ (N :# s).
+Proof.
+  intros. inversion H; subst. exists s. split; auto.
+Qed.
+
+Lemma gen_abs : forall G (x : atomic_term) s M r, 
+  G ⊢ ((Abs x s M) :# r) -> exists t, r = (s >> t) /\ ((x :* s) :: G ⊢ (M :# t)).
+Proof.
+  intros. inversion H; subst. exists t. split; auto.
+Qed.
+
+(* Γ ⊢ B : * if Γ is a λ2-context, B is in T2 and all free type variables in B are declared in Γ *)
+Lemma gen_tform: forall G B, G ⊢ TSt B ->
+    l2_context G /\ foreach (FVl B) (check_type G).
+Proof.
+  intros. split; inversion H; subst; auto.
+Qed.
+
+Lemma gen_tapp: forall G M B t, G ⊢ ((M!!B) :# t) -> exists a A, G ⊢ (M :# (Pi a A)) /\ G ⊢ TSt B /\ t = subs A a B.
+Proof.
+  intros. inversion H; subst. exists a. exists A. split; auto.
+Qed.
+
+Lemma gen_tabs: forall G a M r, G ⊢ ((Tabs a M) :# r) -> exists A, r = Pi a A /\ ((TStd a) :: G ⊢ (M :# A)).
+Proof.
+  intros. inversion H; subst. exists A. split; auto.
+Qed.
